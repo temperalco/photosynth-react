@@ -1,0 +1,41 @@
+{
+  "name": "photosynth-react",
+  "version": "1.0.0",
+  "description": "React component for the Temperal PhotoSynth image service",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "node --loader ts-node/esm index.ts",
+    "build": "npm run build:types",
+    "build:types": "tsc -d --declarationMap -p ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/temperalco/photosynth-react.git"
+  },
+  "keywords": [
+    "photosynth",
+    "temperal",
+    "image",
+    "management",
+    "optimization",
+    "processing",
+    "react"
+  ],
+  "author": "temperal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/temperalco/photosynth-react/issues"
+  },
+  "homepage": "https://github.com/temperalco/photosynth-react#readme",
+  "devDependencies": {
+    "@types/node": "^20.10.3",
+    "@types/react": "^18.2.41",
+    "typescript": "^5.3.2"
+  },
+  "dependencies": {
+    "react": ">=16.8"
+  },
+  "peerDependencies": {
+    "react": ">=16.8"
+  }
+}
