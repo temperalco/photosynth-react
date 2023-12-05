@@ -2,6 +2,10 @@
 
 This component provides a declarative interface to the PhotoSynth service for rendering images.
 
+## Installation
+
+> npm i photosynth-react
+
 ## Setup
 
 A PhotoSynth key is required and may be passed to the component as the prop `psKey` or set with the environment variable `REACT_APP_PHOTOSYNTH_KEY`. The latter is preferred to avoid passing in the psKey prop to every instance.
@@ -37,6 +41,9 @@ Sign up for a free key at https://temperal.co/
 ## Example
 
 ```
+import { PhotoSynth } from "photosynth-react";
+...
+
   <PhotoSynth
     adaptiveHistogram={2}
     blur={0.02}

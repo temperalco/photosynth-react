@@ -51,7 +51,7 @@ export function generateUrl(args: PhotoSynthProps): GenerateUrlResult {
   const {
     REACT_APP_PHOTOSYNTH_KEY,
     REACT_APP_PHOTOSYNTH_URL = "https://ps.temperal.co/ps",
-  }  = process?.env ?? {};
+  }  = process.env ?? {};
   const {
     blur, brightness, adaptiveHistogram, cropBottomPercent, cropLeftPercent, cropRightPercent, cropTopPercent, 
     format, gamma, greyscale, height, hue, lightness, normalizeLower, normalizeUpper, psKey, saturation, 
