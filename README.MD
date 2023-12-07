@@ -19,13 +19,15 @@ Sign up for a free key at https://temperal.co/
 | adaptiveHistogram  | 0 - 100 |    | int | Adaptive histogram level of brightening
 | blur  | 0.02 - 20.0 |       | float | Blur strength
 | brightness  | 0.0 - 20.0 |       | float | Brightness multiplier
+| bypass  |  | falsy | boolean | Load sourceUrl directly without using PhotoSynth
+| cacheBust |  | falsy | boolean, string | If true, bust the cache with random query param. If string, use value as the param value.
 | cropBottomPercent  | 1 - 99 |       | int | Crop bottom percentage
 | cropLeftPercent  | 1 - 99 |       | int | Crop left percentage
 | cropRightPercent  | 1 - 99 |       | int | Crop right percentage
 | cropTopPercent  | 1 - 99 |       | int | Crop top percentage
 | format  |  | webp | FormatType | "avif", "gif", "jpeg", "png", "tiff", "webp"
 | gamma  | 1.0 - 3.0 |  1  | float | Gamma
-| greyscale  |  | false | boolean | Greyscale (true/false)
+| greyscale  |  | falsy | boolean | Greyscale (true/false)
 | height  | 1 - 5000  |       | int | Generated image height
 | hue  | 0.0 - 180.0 |       | float | Hue shift
 | imgProps  |   |       | object | ImgHTMLAttributes passed to the `<img>` tag

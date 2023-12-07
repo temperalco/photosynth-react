@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FunctionComponent } from "react";
 
 export type FormatType = "avif" | "gif" | "jpeg" | "png" | "tiff" | "webp";
 
@@ -6,6 +6,8 @@ export interface PhotoSynthProps {
   adaptiveHistogram?: number
   blur?: number
   brightness?: number
+  bypass?: boolean
+  cacheBust?: boolean | string
   cropBottomPercent?: number
   cropLeftPercent?: number
   cropRightPercent?: number
@@ -28,14 +30,13 @@ export interface PhotoSynthProps {
   imgProps?: React.ImgHTMLAttributes<HTMLImageElement>
 };
 
-export function PhotoSynth(props: PhotoSynthProps) {
+export const PhotoSynth: FunctionComponent<PhotoSynthProps> = props => {
   const { imgProps } = props;
   const { url, error } = generateUrl(props);
   if (error) return <p>{error}</p>;
-
   return (
     <img
-      alt="" // placeholder
+      alt="" // placeholder may be overriden by imgProps
       src={url}
       {...imgProps}
     />
@@ -53,10 +54,17 @@ export function generateUrl(args: PhotoSynthProps): GenerateUrlResult {
     REACT_APP_PHOTOSYNTH_URL = "https://ps.temperal.co/ps",
   }  = process.env ?? {};
   const {
-    blur, brightness, adaptiveHistogram, cropBottomPercent, cropLeftPercent, cropRightPercent, cropTopPercent, 
-    format, gamma, greyscale, height, hue, lightness, normalizeLower, normalizeUpper, psKey, saturation, 
-    sharpen, sourceUrl, width,
+    adaptiveHistogram, blur, brightness, bypass, cacheBust, cropBottomPercent, cropLeftPercent, 
+    cropRightPercent, cropTopPercent, format, gamma, greyscale, height, hue, lightness, 
+    normalizeLower, normalizeUpper, psKey, saturation, sharpen, sourceUrl, width,
   } = args;
+
+  // Return original source URL
+  if (bypass) {
+    const url = processCacheBust(sourceUrl, cacheBust);
+    return { url };
+  }
+
   const key = psKey ?? REACT_APP_PHOTOSYNTH_KEY;
 
   if (!key) {
@@ -94,9 +102,23 @@ export function generateUrl(args: PhotoSynthProps): GenerateUrlResult {
   if (validateValue({ max: 20, min: 0, type: "float", value: saturation })) { url += `&s=${saturation}` }
   if (validateValue({ max: 10, min: 0.1, type: "float", value: sharpen })) { url += `&sh=${sharpen}` }
   if (greyscale) { url += `&gr=${greyscale}` }
-  if (format) {url += `&o=${format}` }
+  if (format) { url += `&o=${format}` }
+  url = processCacheBust(url, cacheBust)
 
   return { url };
+}
+
+//---------------------------------------------------------
+function processCacheBust(url: string, cacheBust: boolean | string | undefined) {
+  let delimiter = url.includes("?") ? "&" : "?";
+  if (cacheBust === true) {
+    // Appending the query param none=${cacheBustVal} busts the browser cache
+    return `${url}${delimiter}none=${Date.now()}`;
+  }
+  else if (cacheBust) { // string is truthy
+    return `${url}${delimiter}none=${cacheBust}`;
+  }
+  return url;
 }
 
 //---------------------------------------------------------
