@@ -64,3 +64,7 @@ import { PhotoSynth } from "photosynth-react";
 ## Usage with other frameworks
 
 The `generateUrl()` method is exposed and accepts an object with the same keys as documented above. The resulting URL may be passed as the `src` attribute of the `<img>` tag.
+
+## Notes
+
+If the image processing fails, the original image URL will be displayed. Please contact support at https://temperal.co with the error details.

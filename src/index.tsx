@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useCallback, useState } from "react";
 
 export type FormatType = "avif" | "gif" | "jpeg" | "png" | "tiff" | "webp";
 
@@ -30,14 +30,21 @@ export interface PhotoSynthProps {
   imgProps?: React.ImgHTMLAttributes<HTMLImageElement>
 };
 
-export const PhotoSynth: FunctionComponent<PhotoSynthProps> = props => {
-  const { imgProps } = props;
+export const PhotoSynth: FunctionComponent<PhotoSynthProps> = (props: PhotoSynthProps) => {
+  const { imgProps, sourceUrl } = props;
+  const [fallbackUrl, setFallbackUrl] = useState<string | undefined>();
+  const onImageError = useCallback(() => {
+    console.log("PhotoSynth error processing image. Falling back to source URL.")
+    setFallbackUrl(sourceUrl);
+  }, [sourceUrl]);
+
   const { url, error } = generateUrl(props);
   if (error) return <p>{error}</p>;
   return (
     <img
       alt="" // placeholder may be overriden by imgProps
-      src={url}
+      onError={onImageError}
+      src={fallbackUrl ?? url}
       {...imgProps}
     />
   );
