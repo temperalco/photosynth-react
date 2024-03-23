@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useCallback, useState } from "react";
+import React, { CSSProperties, FunctionComponent, useEffect, useRef, useState } from "react";
 
 export type FormatType = "avif" | "gif" | "jpeg" | "png" | "tiff" | "webp";
 
@@ -26,28 +26,38 @@ export interface PhotoSynthProps {
   sourceUrl: string
   width?: number
 
-  // imgProps is passed to the underlying <img>
-  imgProps?: React.ImgHTMLAttributes<HTMLImageElement>
+  // cssStyle is passed to the underlying <div>
+  cssStyle?: CSSProperties
 };
 
 export const PhotoSynth: FunctionComponent<PhotoSynthProps> = (props: PhotoSynthProps) => {
-  const { imgProps, sourceUrl } = props;
-  const [fallbackUrl, setFallbackUrl] = useState<string | undefined>();
-  const onImageError = useCallback(() => {
-    console.log("PhotoSynth error processing image. Falling back to source URL.")
-    setFallbackUrl(sourceUrl);
-  }, [sourceUrl]);
+  const { cssStyle, sourceUrl } = props;
+  const [style, setStyle] = useState<CSSProperties>({
+    height: "100%",
+    width: "100%",
+  });
 
-  const { url, error } = generateUrl(props);
-  if (error) return <p>{error}</p>;
-  return (
-    <img
-      alt="" // placeholder may be overriden by imgProps
-      onError={onImageError}
-      src={fallbackUrl ?? url}
-      {...imgProps}
-    />
-  );
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (style?.backgroundImage) return; // Do not recompute image since it's already in memory
+    const offsetWidth = ref?.current?.offsetWidth;
+    if (!offsetWidth) return;
+    const { url, error } = generateUrl({ ...props, offsetWidth });
+    if (error) {
+      console.log("PhotoSynth error processing image. Falling back to source URL.");
+    }
+    setStyle({
+      backgroundImage: `url(${url ?? sourceUrl})`,
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+      backgroundSize: "contain",
+      height: "100%",
+      width: "100%",
+      ...cssStyle
+    });
+  });
+
+  return ( <div ref={ref} style={style} /> );
 }
 
 interface GenerateUrlResult {
@@ -55,7 +65,11 @@ interface GenerateUrlResult {
   error?: string
 };
 
-export function generateUrl(args: PhotoSynthProps): GenerateUrlResult {
+interface GenerateUrlProps extends PhotoSynthProps {
+  offsetWidth?: number
+}
+
+export function generateUrl(args: GenerateUrlProps): GenerateUrlResult {
   const {
     REACT_APP_PHOTOSYNTH_KEY,
     REACT_APP_PHOTOSYNTH_URL = "https://ps.temperal.co/ps",
@@ -64,6 +78,7 @@ export function generateUrl(args: PhotoSynthProps): GenerateUrlResult {
     adaptiveHistogram, blur, brightness, bypass, cacheBust, cropBottomPercent, cropLeftPercent, 
     cropRightPercent, cropTopPercent, format, gamma, greyscale, height, hue, lightness, 
     normalizeLower, normalizeUpper, psKey, saturation, sharpen, sourceUrl, width,
+    offsetWidth,
   } = args;
 
   // Return original source URL
@@ -84,9 +99,25 @@ export function generateUrl(args: PhotoSynthProps): GenerateUrlResult {
     return { error: "Please provide a valid image URL" };
   }
 
+  // Prioritize width over height if both are provided to maintain aspect ratio.
+  let _width = width;
+  let _height = height;
+  if (_width && _height) {
+    _height = undefined;
+  }
+  else if (!_width && !_height) {
+    _width = offsetWidth;
+  }
+  if (_width) {
+    _width = roundMultiple128(_width);
+  }
+  else if (_height) {
+    _height = roundMultiple128(_height);
+  }
+
   let url = `${REACT_APP_PHOTOSYNTH_URL}/u=${sourceUrl},k=${key}`;
-  if (validateValue({ max: 5000, min: 1, value: width })) { url += `,w=${width}` }
-  if (validateValue({ max: 5000, min: 1, value: height })) { url += `,h=${height}` }
+  if (validateValue({ max: 5000, min: 1, value: _width })) { url += `,w=${_width}` }
+  if (validateValue({ max: 5000, min: 1, value: _height })) { url += `,h=${_height}` }
   if (validateValue({ max: 100, min: 0, value: adaptiveHistogram })) { url += `,ah=${adaptiveHistogram}` }
   if (validateValue({ max: 20, min: 0.2, type: "float", value: blur })) { url += `,b=${blur}` }
   if (validateValue({ max: 20, min: 0, type: "float", value: brightness })) { url += `,br=${brightness}` }
@@ -163,4 +194,13 @@ export function isValidHttpUrl(s: string) {
     url = new URL(s);
   } catch (e) { return false; }
   return /https?/.test(url.protocol);
+}
+
+//---------------------------------------------------------
+// Round up to the closest multiple of 128. The minimum value is 64.
+export function roundMultiple128(val: number) {
+  if (val > 64) {
+    return Math.ceil(val/128.0) * 128;
+  }
+  return 64;
 }

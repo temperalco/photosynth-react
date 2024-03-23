@@ -30,7 +30,6 @@ Sign up for a free key at https://temperal.co/
 | greyscale  |  | falsy | boolean | Greyscale (true/false)
 | height  | 1 - 5000  |       | int | Generated image height
 | hue  | 0.0 - 180.0 |       | float | Hue shift
-| imgProps  |   |       | object | ImgHTMLAttributes passed to the `<img>` tag
 | lightness  | 0.0 - 200.0 |       | float | Lightness addition
 | normalizeLower  | 1 - 99 |       | int | Normalization lower percentile threshold
 | normalizeUpper  | 1 - 99 |       | int | Normalization upper percentile threshold
@@ -39,6 +38,17 @@ Sign up for a free key at https://temperal.co/
 | sharpen  | 0.1 - 10.0  |       | float | Sharpening level
 | sourceUrl  |   |       | string | URL of the source image (**Required**)
 | width  | 1 - 5000  |       | int | Generated image width
+
+An additional prop `cssStyle` may be provided to customize the element's behavior. The value is merged with the default:
+```
+{
+  backgroundPosition: "center",
+  backgroundRepeat: "no-repeat",
+  backgroundSize: "contain",
+  height: "100%",
+  width: "100%",
+}
+```
 
 ## Example
 
@@ -52,18 +62,17 @@ import { PhotoSynth } from "photosynth-react";
     brightness={1.0}
     cropBottomPercent={10}
     sourceUrl="https://some.domain/path/to/picture"
-    width={256}
-    imgProps={{
-      alt: "Alt string",
-      loading: "lazy",
-      width: "100%",
+    cssStyle={{
+      backgroundSize: "cover"
     }}
   />
 ```
 
+Note that when `width` is omitted, the image auto sizes to its container's width.
+
 ## Usage with other frameworks
 
-The `generateUrl()` method is exposed and accepts an object with the same keys as documented above. The resulting URL may be passed as the `src` attribute of the `<img>` tag.
+The `generateUrl()` method is exposed and accepts an object with the same keys as documented above. The resulting URL may be passed as the `src` attribute of the `<img>` tag or the CSS value `background-image: "url(GENERATED_URL)"`.
 
 ## Notes
 
