@@ -1,6 +1,6 @@
 {
   "name": "photosynth-react",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "React component for the Temperal PhotoSynth image service",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -36,11 +36,17 @@ export const PhotoSynth: FunctionComponent<PhotoSynthProps> = (props: PhotoSynth
     height: "100%",
     width: "100%",
   });
-
   const ref = useRef<HTMLDivElement>(null);
+  const [offsetWidth, setOffsetWidth] = useState(0);
+
   useEffect(() => {
-    if (style?.backgroundImage) return; // Do not recompute image since it's already in memory
-    const offsetWidth = ref?.current?.offsetWidth;
+    if (offsetWidth) return; // Do not recompute image since it's already in memory
+    if (ref?.current?.offsetWidth) {
+      setOffsetWidth(ref.current.offsetWidth);
+    }
+  }, [ref?.current?.offsetWidth]);
+
+  useEffect(() => {
     if (!offsetWidth) return;
     const { url, error } = generateUrl({ ...props, offsetWidth });
     if (error) {
@@ -55,7 +61,7 @@ export const PhotoSynth: FunctionComponent<PhotoSynthProps> = (props: PhotoSynth
       width: "100%",
       ...cssStyle
     });
-  });
+  }, [offsetWidth, props]);
 
   return ( <div ref={ref} style={style} /> );
 }
