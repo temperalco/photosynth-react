@@ -22,6 +22,7 @@ export interface PhotoSynthProps {
   normalizeUpper?: number
   psKey?: string
   saturation?: number
+  rotate?: number
   sharpen?: number
   sourceUrl: string
   width?: number
@@ -83,7 +84,7 @@ export function generateUrl(args: GenerateUrlProps): GenerateUrlResult {
   const {
     adaptiveHistogram, blur, brightness, bypass, cacheBust, cropBottomPercent, cropLeftPercent, 
     cropRightPercent, cropTopPercent, format, gamma, greyscale, height, hue, lightness, 
-    normalizeLower, normalizeUpper, psKey, saturation, sharpen, sourceUrl, width,
+    normalizeLower, normalizeUpper, psKey, saturation, rotate, sharpen, sourceUrl, width,
     offsetWidth,
   } = args;
 
@@ -144,6 +145,7 @@ export function generateUrl(args: GenerateUrlProps): GenerateUrlResult {
     url += `,n=${normalizeLower}_${normalizeUpper}`
   }
   if (validateValue({ max: 20, min: 0, type: "float", value: saturation })) { url += `,s=${saturation}` }
+  if (validateValue({ max: 360, min: -360, type: "float", value: rotate })) { url += `,r=${rotate}` }
   if (validateValue({ max: 10, min: 0.1, type: "float", value: sharpen })) { url += `,sh=${sharpen}` }
   if (greyscale) { url += `,gr=${greyscale}` }
   if (format) { url += `,o=${format}` }
