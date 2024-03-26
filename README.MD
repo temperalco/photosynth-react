@@ -34,6 +34,7 @@ Sign up for a free key at https://temperal.co/
 | normalizeLower  | 1 - 99 |       | int | Normalization lower percentile threshold
 | normalizeUpper  | 1 - 99 |       | int | Normalization upper percentile threshold
 | psKey  |   |       | string | PhotoSynth key (Required if REACT_APP_PHOTOSYNTH_KEY not set)
+| rotate  | -360 - +360  |       | float | Rotation degrees
 | saturation  | 0.0 - 20.0 |       | float | Saturation level
 | sharpen  | 0.1 - 10.0  |       | float | Sharpening level
 | sourceUrl  |   |       | string | URL of the source image (**Required**)
@@ -74,6 +75,6 @@ Note that when `width` is omitted, the image auto sizes to its container's width
 
 The `generateUrl()` method is exposed and accepts an object with the same keys as documented above. The resulting URL may be passed as the `src` attribute of the `<img>` tag or the CSS value `background-image: "url(GENERATED_URL)"`.
 
-## Notes
+## Help
 
-If the image processing fails, the original image URL will be displayed. Please contact support at https://temperal.co with the error details.
+Please contact support at https://temperal.co with error details.
