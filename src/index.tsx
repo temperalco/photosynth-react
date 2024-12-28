@@ -1,4 +1,4 @@
-import React, { CSSProperties, FunctionComponent, useEffect, useRef, useState } from "react";
+import React, { CSSProperties, FunctionComponent, LegacyRef, MouseEventHandler, useEffect, useMemo, useRef, useState } from "react";
 
 export type FormatType = "avif" | "gif" | "jpeg" | "png" | "tiff" | "webp";
 
@@ -27,18 +27,20 @@ export interface PhotoSynthProps {
   sourceUrl: string
   width?: number
 
-  // cssStyle is passed to the underlying <div>
+  // cssStyle is passed to the underlying <div> or <img>
   cssStyle?: CSSProperties
+  onClick?: MouseEventHandler<HTMLImageElement>
+  renderElement?: "img" | "div"
 };
 
 export const PhotoSynth: FunctionComponent<PhotoSynthProps> = (props: PhotoSynthProps) => {
-  const { cssStyle, sourceUrl } = props;
-  const [style, setStyle] = useState<CSSProperties>({
+  const { cssStyle, height, onClick, renderElement = "img", sourceUrl, width } = props;
+  const ref = useRef<HTMLDivElement | HTMLImageElement>(null);
+  const [offsetWidth, setOffsetWidth] = useState(0);
+  const containerStyle = {
     height: "100%",
     width: "100%",
-  });
-  const ref = useRef<HTMLDivElement>(null);
-  const [offsetWidth, setOffsetWidth] = useState(0);
+  };
 
   useEffect(() => {
     if (offsetWidth) return; // Do not recompute image since it's already in memory
@@ -47,24 +49,60 @@ export const PhotoSynth: FunctionComponent<PhotoSynthProps> = (props: PhotoSynth
     }
   }, [ref?.current?.offsetWidth]);
 
-  useEffect(() => {
+  const imgEl = useMemo(() => {
     if (!offsetWidth) return;
     const { url, error } = generateUrl({ ...props, offsetWidth });
     if (error) {
       console.log("PhotoSynth error processing image. Falling back to source URL.");
     }
-    setStyle({
-      backgroundImage: `url(${url ?? sourceUrl})`,
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat",
-      backgroundSize: "contain",
-      height: "100%",
-      width: "100%",
-      ...cssStyle
-    });
+    const _height = height ?? "100%";
+    const _width = offsetWidth;
+    const _url = url ?? sourceUrl;
+
+    if (renderElement === "div") {
+      const style = {
+        backgroundImage: `url(${_url})`,
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "contain",
+        height: _height,
+        minHeight: "50px",
+        width: _width,
+        ...cssStyle,
+      };
+      return (
+        <div
+          onClick={onClick}
+          style={style}
+        />
+      );
+    }
+    else {
+      return (
+        <img
+          alt={sourceUrl}
+          height={_height}
+          loading="lazy"
+          onClick={onClick}
+          ref={ref as LegacyRef<HTMLImageElement>}
+          src={url}
+          srcSet={url}
+          style={{
+            minHeight: "50px",
+            ...cssStyle,
+          }}
+          width={_width}
+        />    
+      );
+   
+    }
   }, [offsetWidth, props]);
 
-  return ( <div ref={ref} style={style} /> );
+  return (
+    <div ref={ref} style={containerStyle}>
+      {imgEl}
+    </div>
+  );
 }
 
 interface GenerateUrlResult {

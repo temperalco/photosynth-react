@@ -12,15 +12,13 @@ A PhotoSynth key is required and may be passed to the component as the prop `psK
 
 Sign up for a free key at https://temperal.co/
 
-## Props
+## Image Optimization Props
 
 | Name     | Range   | Default | Type  | Description
 | -------- | ------- | ------- | ----- | ---------- |
 | adaptiveHistogram  | 0 - 100 |    | int | Adaptive histogram level of brightening
 | blur  | 0.02 - 20.0 |       | float | Blur strength
 | brightness  | 0.0 - 20.0 |       | float | Brightness multiplier
-| bypass  |  | falsy | boolean | Load sourceUrl directly without using PhotoSynth
-| cacheBust |  | falsy | boolean, string | If true, bust the cache with random query param. If string, use value as the param value.
 | cropBottomPercent  | 1 - 99 |       | int | Crop bottom percentage
 | cropLeftPercent  | 1 - 99 |       | int | Crop left percentage
 | cropRightPercent  | 1 - 99 |       | int | Crop right percentage
@@ -40,13 +38,25 @@ Sign up for a free key at https://temperal.co/
 | sourceUrl  |   |       | string | URL of the source image (**Required**)
 | width  | 1 - 5000  |       | int | Generated image width
 
-An additional prop `cssStyle` may be provided to customize the element's behavior. The value is merged with the default:
+### Other Props
+
+| Name     | Range   | Default | Type  | Description
+| -------- | ------- | ------- | ----- | ---------- |
+| bypass  |  | falsy | boolean | Load sourceUrl directly without using PhotoSynth
+| cacheBust |  | falsy | boolean, string | If true, bust the cache with random query param. If string, use value as the param value.
+| cssStyle  |  |     | object| CSS style passed to underlying \<div\> or \<img\>
+| onClick   |  |     | func  | click handler
+| renderElement |    | "img" | "div", "img" | Element that the image is rendered with
+
+
+The optional `cssStyle` may be provided to customize the element's behavior. The value is merged with the default:
 ```
 {
   backgroundPosition: "center",
   backgroundRepeat: "no-repeat",
   backgroundSize: "contain",
   height: "100%",
+  minHeight: "50px",
   width: "100%",
 }
 ```
