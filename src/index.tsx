@@ -43,20 +43,20 @@ export const PhotoSynth: FunctionComponent<PhotoSynthProps> = (props: PhotoSynth
   };
 
   useEffect(() => {
-    if (offsetWidth) return; // Do not recompute image since it's already in memory
+    if (width ?? offsetWidth) return; // Do not recompute image since it's already in memory
     if (ref?.current?.offsetWidth) {
       setOffsetWidth(ref.current.offsetWidth);
     }
   }, [ref?.current?.offsetWidth]);
 
   const imgEl = useMemo(() => {
-    if (!offsetWidth) return;
-    const { url, error } = generateUrl({ ...props, offsetWidth });
+    const _width = width ?? offsetWidth;
+    if (!_width) return;
+    const { url, error } = generateUrl({ ...props, offsetWidth: _width });
     if (error) {
       console.log("PhotoSynth error processing image. Falling back to source URL.");
     }
     const _height = height ?? "100%";
-    const _width = offsetWidth;
     const _url = url ?? sourceUrl;
 
     if (renderElement === "div") {

@@ -36,7 +36,7 @@ Sign up for a free key at https://temperal.co/
 | saturation  | 0.0 - 20.0 |       | float | Saturation level
 | sharpen  | 0.1 - 10.0  |       | float | Sharpening level
 | sourceUrl  |   |       | string | URL of the source image (**Required**)
-| width  | 1 - 5000  |       | int | Generated image width
+| width  | 1 - 5000  |       | int | Generated image width (autosizes if omitted)
 
 ### Other Props
 
