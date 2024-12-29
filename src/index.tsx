@@ -56,10 +56,10 @@ export const PhotoSynth: FunctionComponent<PhotoSynthProps> = (props: PhotoSynth
     if (error) {
       console.log("PhotoSynth error processing image. Falling back to source URL.");
     }
-    const _height = height ?? "100%";
     const _url = url ?? sourceUrl;
 
     if (renderElement === "div") {
+      const _height = height ?? "100%";
       const style = {
         backgroundImage: `url(${_url})`,
         backgroundPosition: "center",
@@ -78,6 +78,7 @@ export const PhotoSynth: FunctionComponent<PhotoSynthProps> = (props: PhotoSynth
       );
     }
     else {
+      const _height = height ?? "auto";
       return (
         <img
           alt={sourceUrl}
