@@ -92,7 +92,7 @@ export const PhotoSynth: FunctionComponent<PhotoSynthProps> = (props: PhotoSynth
             minHeight: "50px",
             ...cssStyle,
           }}
-          width={_width}
+          width="100%"
         />    
       );
    
