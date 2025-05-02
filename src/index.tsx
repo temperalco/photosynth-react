@@ -79,6 +79,7 @@ export const PhotoSynth: FunctionComponent<PhotoSynthProps> = (props: PhotoSynth
     }
     else {
       const _height = height ?? "auto";
+      const _width = width ?? "100%";
       return (
         <img
           alt={sourceUrl}
@@ -92,10 +93,9 @@ export const PhotoSynth: FunctionComponent<PhotoSynthProps> = (props: PhotoSynth
             minHeight: "50px",
             ...cssStyle,
           }}
-          width="100%"
+          width={_width}
         />    
       );
-   
     }
   }, [offsetWidth, props]);
 
